@@ -1,22 +1,20 @@
-name: Submit Sitemap to IndexNow
+name: Submit Sitemap URLs to IndexNow
 
 on:
   schedule:
-    - cron: 0 0 * * 0  # Run at midnight UTC every Sunday.
-
-permissions: read-all
+    - cron: 0 0 1 * *  # Run at midnight UTC on the 1st day of each month.
 
 jobs:
   submit-sitemap:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Submit sitemap URLs to IndexNow
+      - name: Submit GoutSnap sitemap URLs to IndexNow
         uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v1
         with:
-          host: jakob-bagterp.github.io
-          api_key: 6d71a14ac15c4c41a0c19e641f659208
-          api_key_location: https://jakob-bagterp.github.io/index-now-api-key.txt
-          endpoint: yandex
-          sitemap_locations: https://jakob-bagterp.github.io/index-now-submit-sitemap-urls-action/sitemap.xml
-          sitemap_days_ago: 7
+          host: goutsnap.com  # Replace with your website's host.
+          api_key: ${{ secrets.INDEX_NOW_API_KEY }}  # Replace with your IndexNow API key.
+          api_key_location: https://goutsnap.com/${{ secrets.INDEX_NOW_API_KEY }}.txt  # Replace with your IndexNow API key location.
+          endpoint: yandex  # Optional. Other options: bing, indexnow, naver, seznam, yandex, yep. Default is Bing.
+          sitemap_locations: https://goutsnap.com/sitemap.xml  # Replace with your sitemap location
+          #sitemap_filter: section1  # Optional. Only submit sitemap URLs that contain "section1" or match a regular expression "r'(section1)|(section2)'".
+          sitemap_days_ago: 30  # Optional. Only submit sitemap URLs that have been modified recently, e.g. 1, 2, or more days ago.

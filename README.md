@@ -26,13 +26,13 @@ jobs:
       - name: Submit sitemap URLs to IndexNow
         uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v1
         with:
-          host: example.com  # Replace with your website's host.
+          host: goutsnap.com  # Replace with your website's host.
           api_key: ${{ secrets.INDEX_NOW_API_KEY }}  # Replace with your IndexNow API key.
-          api_key_location: https://example.com/${{ secrets.INDEX_NOW_API_KEY }}.txt  # Replace with your IndexNow API key location.
+          api_key_location: https://goutsnap.com/${{ secrets.INDEX_NOW_API_KEY }}.txt  # Replace with your IndexNow API key location.
           endpoint: yandex  # Optional. Other options: bing, indexnow, naver, seznam, yandex, yep. Default is Bing.
-          sitemap_locations: https://example.com/sitemap.xml  # Replace with your sitemap location
-          sitemap_filter: section1  # Optional. Only submit sitemap URLs that contain "section1" or match a regular expression "r'(section1)|(section2)'".
-          sitemap_days_ago: 2  # Optional. Only submit sitemap URLs that have been modified recently, e.g. 1, 2, or more days ago.
+          sitemap_locations: https://goutsnap.com/sitemap.xml  # Replace with your sitemap location
+          #sitemap_filter: section1  # Optional. Only submit sitemap URLs that contain "section1" or match a regular expression "r'(section1)|(section2)'".
+          sitemap_days_ago: 30  # Optional. Only submit sitemap URLs that have been modified recently, e.g. 1, 2, or more days ago.
 ```
 
 > [!IMPORTANT]

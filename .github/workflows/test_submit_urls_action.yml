@@ -29,18 +29,18 @@ jobs:
       - name: Submit single URL to IndexNow
         run: >
           python src/helper/submit.py
-          --host jakob-bagterp.github.io
-          --api-key 6d71a14ac15c4c41a0c19e641f659208
-          --api-key-location https://jakob-bagterp.github.io/index-now-api-key.txt
-          --endpoint yandex
-          --urls https://jakob-bagterp.github.io/index-now-submit-sitemap-urls-action/
+          --host goutsnap.com
+          --api-key ab3ff050879f49dba39bc5689fcd9109
+          --api-key-location https://goutsnap.com/ab3ff050879f49dba39bc5689fcd9109.txt
+          --endpoint bing
+          --urls https://goutsnap.com/gout-free-tools/
       - name: Submit multiple URLs to IndexNow
         run: >
           python src/helper/submit.py
-          --host jakob-bagterp.github.io
-          --api-key 6d71a14ac15c4c41a0c19e641f659208
-          --api-key-location https://jakob-bagterp.github.io/index-now-api-key.txt
+          --host goutsnap.com
+          --api-key ab3ff050879f49dba39bc5689fcd9109
+          --api-key-location https://goutsnap.com/ab3ff050879f49dba39bc5689fcd9109.txt
           --endpoint yandex
           --urls "
-            https://jakob-bagterp.github.io
-            https://jakob-bagterp.github.io/index-now-submit-sitemap-urls-action/"
+            https://goutsnap.com/gout-free-tools/
+            https://goutsnap.com/"

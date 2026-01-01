@@ -1,5 +1,10 @@
 name: Submit GoutSnap Sitemap URLs to IndexNow
 
+on:
+  push:
+    branches:
+      - master
+
 #on:
 #  schedule:
 #    - cron: 0 0 1 * *  # Run at midnight UTC on the 1st day of each month.

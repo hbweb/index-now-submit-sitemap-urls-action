@@ -1,12 +1,9 @@
-name: Submit GoutSnap Sitemap URLs to IndexNow - Monthly
-# on:
-#  push:
-#    branches:
-#      - master
+name: Submit GoutSnap Sitemap URLs to IndexNow - IMMEDIATE
 
 on:
-  schedule:
-    - cron: 0 0 1 * *  # Run at midnight UTC on the 1st day of each month.
+ push:
+   branches:
+     - master
 
 jobs:
   submit-sitemap:

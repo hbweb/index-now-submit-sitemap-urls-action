@@ -1,36 +1,62 @@
-name: Submit GoutSnap Sitemap URLs to IndexNow - Monthly
-# on:
-#  push:
-#    branches:
-#      - master
+name: Submit GoutSnap Sitemap URLs to IndexNow
 
 on:
-  workflow_dispatch:  # Allow manual trigger from GitHub Actions UI or CLI.
-  schedule:
-    - cron: 0 0 1 * *  # Run at midnight UTC on the 1st day of each month.
+  pull_request:
+    branches:
+      - "**"
+  push:
+    branches:
+      - dev
+# on:
+#   workflow_dispatch:  # Allow manual trigger from GitHub Actions UI or CLI.
+#   schedule:
+#     - cron: 0 0 1 * *  # Run at midnight UTC on the 1st day of each month.
+
+permissions: read-all
 
 jobs:
-  submit-sitemap:
+  test-submit-sitemaps-action:
     runs-on: ubuntu-latest
-    steps:
-      - name: Submit GoutSnap sitemap URLs to IndexNow
-        uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v1
-        with:
-          host: goutsnap.com  # Replace with your website's host.
-          api_key: ${{ secrets.INDEX_NOW_API_KEY }}  # Replace with your IndexNow API key.
-          api_key_location: https://goutsnap.com/${{ secrets.INDEX_NOW_API_KEY }}.txt  # Replace with your IndexNow API key location.
-          endpoint: bing  # Optional. Other options: bing, indexnow, naver, seznam, yandex, yep. Default is Bing.
-          sitemap_locations: "
-            https://goutsnap.com/sitemap-es.xml
-            https://goutsnap.com/sitemap-vn.xml
-            https://goutsnap.com/sitemap-ja.xml
-            https://goutsnap.com/sitemap-ko.xml
-            https://goutsnap.com/sitemap-ar.xml
-            https://goutsnap.com/sitemap-zh.xml
-            https://goutsnap.com/sitemap-pt.xml
-            https://goutsnap.com/sitemap-de.xml
-            https://goutsnap.com/sitemap-fr.xml
-            https://goutsnap.com/sitemap-en.xml"
 
-          #sitemap_filter: section1  # Optional. Only submit sitemap URLs that contain "section1" or match a regular expression "r'(section1)|(section2)'".
-          #sitemap_days_ago: 30  # Optional. Only submit sitemap URLs that have been modified recently, e.g. 1, 2, or more days ago.
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
+      - name: Install dependencies
+        run: uv sync --frozen
+
+      - name: Submit URLs from single sitemap to IndexNow
+        run: >
+          uv run python src/helper/submit.py
+          --host goutsnap.com
+          --api-key ab3ff050879f49dba39bc5689fcd9109
+          --api-key-location https://goutsnap.com/ab3ff050879f49dba39bc5689fcd9109.txt
+          --endpoint bing
+          --sitemap-locations https://goutsnap.com/sitemap.xml
+
+      # - name: Submit multiple URLs to IndexNow
+      #   run: >
+      #     uv run python src/helper/submit.py
+      #     --host goutsnap.com
+      #     --api-key ab3ff050879f49dba39bc5689fcd9109
+      #     --api-key-location https://goutsnap.com/ab3ff050879f49dba39bc5689fcd9109.txt
+      #     --endpoint bing
+      #     --sitemap-locations "
+      #       https://goutsnap.com/sitemap-es.xml
+      #       https://goutsnap.com/sitemap-vn.xml
+      #       https://goutsnap.com/sitemap-ja.xml
+      #       https://goutsnap.com/sitemap-ko.xml
+      #       https://goutsnap.com/sitemap-ar.xml
+      #       https://goutsnap.com/sitemap-zh.xml
+      #       https://goutsnap.com/sitemap-pt.xml
+      #       https://goutsnap.com/sitemap-de.xml
+      #       https://goutsnap.com/sitemap-fr.xml
+      #       https://goutsnap.com/sitemap-en.xml"

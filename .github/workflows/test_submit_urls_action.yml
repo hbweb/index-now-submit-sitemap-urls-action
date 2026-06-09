@@ -17,15 +17,18 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: "3.14"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+
       - name: Install dependencies
-        shell: bash
-        run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
+        run: uv sync --frozen
+
       - name: Submit single URL to IndexNow
         run: >
           python src/helper/submit.py
@@ -40,7 +43,7 @@ jobs:
           --host goutsnap.com
           --api-key ab3ff050879f49dba39bc5689fcd9109
           --api-key-location https://goutsnap.com/ab3ff050879f49dba39bc5689fcd9109.txt
-          --endpoint yandex
+          --endpoint bing
           --urls "
             https://goutsnap.com/gout-free-tools/
             https://goutsnap.com/"

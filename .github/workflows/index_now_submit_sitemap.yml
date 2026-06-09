@@ -33,7 +33,7 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen
 
-      - name: Submit URLs from single sitemap to IndexNow
+      - name: Submit GoutSnap sitemap URLs to IndexNow
         run: >
           uv run python src/helper/submit.py
           --host goutsnap.com

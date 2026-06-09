@@ -1,21 +1,21 @@
-name: Submit GoutSnap Sitemap URLs to IndexNow
+name: Schedule Submission GoutSnap Sitemap URLs to IndexNow
 
-on:
-  pull_request:
-    branches:
-      - "**"
-  push:
-    branches:
-      - dev
 # on:
-#   workflow_dispatch:  # Allow manual trigger from GitHub Actions UI or CLI.
-#   schedule:
-#     - cron: 0 0 1 * *  # Run at midnight UTC on the 1st day of each month.
+#   pull_request:
+#     branches:
+#       - "**"
+#   push:
+#     branches:
+#       - dev
+on:
+  workflow_dispatch:  # Allow manual trigger from GitHub Actions UI or CLI.
+  schedule:
+    - cron: 0 0 1 * *  # Run at midnight UTC on the 1st day of each month.
 
 permissions: read-all
 
 jobs:
-  test-submit-sitemaps-action:
+  schedule-submit-sitemaps-action:
     runs-on: ubuntu-latest
 
     steps:

@@ -33,16 +33,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Submit sitemap URLs to IndexNow
-        uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v1
+        uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v2
         with:
           host: example.com
           api_key: ${{ secrets.INDEX_NOW_API_KEY }}
           api_key_location: https://example.com/${{ secrets.INDEX_NOW_API_KEY }}.txt
-          endpoint: yandex
+          endpoint: naver, seznam, yep
           urls: https://example.com
           sitemap_locations: https://example.com/sitemap.xml
           sitemap_filter: section1
           sitemap_days_ago: 2
+          retries: 3
 ```
 
 ## Overview
@@ -51,11 +52,12 @@ jobs:
 | `host`              | Yes      | The host of your website, e.g. `example.com`.                                                                            | `None`  |
 | `api_key`           | Yes      | The API key for IndexNow, e.g. `a1b2c3d4`.                                                                               | `None`  |
 | `api_key_location`  | Yes      | The location of the API key, e.g. `https://example.com/a1b2c3d4.txt`.                                                    | `None`  |
-| `endpoint`          | Optional | The search engine endpoint, e.g. `indexnow`, `bing`, `naver`, `seznam`, `yandex`, `yep`.                                 | `bing`  |
+| `endpoint`          | Optional | One or more search engine endpoints, e.g. `seznam` or `naver, seznam, yep`. Multiple endpoints are tried in order.        | `bing`  |
 | `urls`              | Optional | The URL(s) to be submitted, e.g. `https://example.com`.                                                                  | `None`  |
 | `sitemap_locations` | Optional | The location of the sitemap(s), e.g. `https://example.com/sitemap.xml`.                                                  | `None`  |
 | `sitemap_filter`    | Optional | Only submit sitemap URLs that contain the filter string, e.g. `section1`.                                                | `None`  |
 | `sitemap_days_ago`  | Optional | Only submit sitemap URLs that have been modified recently based on the `<lastmod>` tag, e.g. `1`, `2`, or more days ago. | `None`  |
+| `retries`           | Optional | Number of times to retry a request on temporary errors, e.g. dropped connections or server errors.                        | `0`     |
 
 ## Parameters
 ### `host`
@@ -99,14 +101,34 @@ Similar to the `api_key`, the location of your API key should be kept secret:
 ```
 
 ### `endpoint`
-Optional. The search engine endpoint, e.g. `indexnow`, `bing`, `naver`, `seznam`, `yandex`, `yep`. If not specified, Bing is used as the default endpoint.
+Optional. The search engine endpoint, e.g. `indexnow`, `bing`, `naver`, `seznam`, `yandex`, `yep`. If not specified, Bing is used as the default endpoint. Any other value makes the workflow fail before anything is submitted, so a typo doesn't go unnoticed.
 
 ```yaml linenums="17" title=".github/workflows/submit_sitemap_to_index_now.yml"
-          endpoint: yandex
+          endpoint: seznam
 ```
+
+#### Fall Back to Other Endpoints
+Sometimes an endpoint is temporarily unavailable or rejects submissions for a specific site. Instead of a single endpoint, provide a list of endpoints. They are tried in order, and the submission stops at the first endpoint that accepts it:
+
+```yaml linenums="17" title=".github/workflows/submit_sitemap_to_index_now.yml"
+          endpoint: naver, seznam, yep
+```
+
+Alternatively over multiple lines, if that's easier to read:
+
+```yaml linenums="17" title=".github/workflows/submit_sitemap_to_index_now.yml"
+          endpoint: >
+            naver
+            seznam
+            yep
+```
+
+The submission falls back to the next endpoint if the endpoint can't be reached, responds with a server error, `429 Too Many Requests` or `403 Forbidden`. Other errors, such as `400 Bad Request`, indicate a problem with the submission itself, so the workflow fails without trying the remaining endpoints. Learn more about the [fallback strategy](https://jakob-bagterp.github.io/index-now-for-python/user-guide/error-handling/fallback-strategy/) in the IndexNow for Python documentation.
 
 !!! warning
     It is not recommended to submit the same URLs to multiple endpoints. Once you have successfully submitted to one [IndexNow](https://www.indexnow.org) endpoint, the IndexNow service is designed to propagate your URLs to other search engines, so you do not need to submit to multiple times.
+
+    A list of endpoints doesn't submit to all of them. It stops at the first endpoint that accepts the submission, and the remaining endpoints are only used as fallback.
 
 ### `urls`
 Optional. The URL(s) to be submitted to IndexNow. Can be an individual URL, e.g. `https://example.com`:
@@ -210,3 +232,16 @@ Or only submit sitemap URLs that have been modified today:
 ```yaml linenums="21" title=".github/workflows/submit_sitemap_to_index_now.yml"
           sitemap_days_ago: 0
 ```
+
+### `retries`
+Optional. Number of times to retry a request on temporary errors, such as dropped connections, timeouts, `429 Too Many Requests` or server errors like `503 Service Unavailable`. By default, it's set to `0`, which means that requests are not retried. Enable retries, so a short glitch at the search engine doesn't make your workflow fail:
+
+```yaml linenums="22" title=".github/workflows/submit_sitemap_to_index_now.yml"
+          retries: 3
+```
+
+Between retries, the wait time increases exponentially (0, 2, 4 seconds, etc.). Other errors, such as `400 Bad Request` or `403 Forbidden`, aren't retried, as sending the same request again gives the same result.
+
+If you have provided [multiple endpoints](#fall-back-to-other-endpoints), each endpoint is retried before the submission falls back to the next one.
+
+Learn more about [retries and timeouts](https://jakob-bagterp.github.io/index-now-for-python/user-guide/error-handling/retries-and-timeouts/) in the IndexNow for Python documentation.

@@ -1,4 +1,4 @@
-[![Latest version](https://img.shields.io/static/v1?label=Version&message=1.0.23&color=yellowgreen)](https://github.com/jakob-bagterp/index-now-submit-sitemap-urls-action/releases/latest)
+[![Latest version](https://img.shields.io/static/v1?label=Version&message=2.0.3&color=yellowgreen)](https://github.com/jakob-bagterp/index-now-submit-sitemap-urls-action/releases/latest)
 [![MIT license](https://img.shields.io/static/v1?label=License&message=MIT&color=blue)](https://github.com/jakob-bagterp/index-now-submit-sitemap-urls-action/blob/master/LICENSE.md)
 [![Codecov](https://codecov.io/gh/jakob-bagterp/index-now-submit-sitemap-urls-action/branch/master/graph/badge.svg?token=PEGUV7IL8T)](https://codecov.io/gh/jakob-bagterp/index-now-submit-sitemap-urls-action)
 [![CodeQL](https://github.com/jakob-bagterp/index-now-submit-sitemap-urls-action/actions/workflows/codeql.yml/badge.svg)](https://github.com/jakob-bagterp/index-now-submit-sitemap-urls-action/actions/workflows/codeql.yml)
@@ -24,15 +24,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Submit sitemap URLs to IndexNow
-        uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v1
+        uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v2
         with:
           host: example.com  # Replace with your website's host.
           api_key: ${{ secrets.INDEX_NOW_API_KEY }}  # Replace with your IndexNow API key.
           api_key_location: https://example.com/${{ secrets.INDEX_NOW_API_KEY }}.txt  # Replace with your IndexNow API key location.
-          endpoint: yandex  # Optional. Other options: bing, indexnow, naver, seznam, yandex, yep. Default is Bing.
+          endpoint: naver, seznam, yep  # Optional. One or more of: bing, indexnow, naver, seznam, yandex, yep. Multiple endpoints are tried in order until one accepts the submission. Default is Bing.
           sitemap_locations: https://example.com/sitemap.xml  # Replace with your sitemap location
           #sitemap_filter: section1  # Optional. Only submit sitemap URLs that contain "section1" or match a regular expression "r'(section1)|(section2)'".
           sitemap_days_ago: 30  # Optional. Only submit sitemap URLs that have been modified recently, e.g. 1, 2, or more days ago.
+          retries: 3  # Optional. Number of times to retry a request on temporary errors. Default is 0, i.e. no retries.
 ```
 
 > [!IMPORTANT]

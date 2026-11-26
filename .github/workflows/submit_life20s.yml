@@ -1,0 +1,21 @@
+name: Submit Life20s Sitemap URLs to IndexNow - IMMEDIATE
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  submit-sitemap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Submit Life20s sitemap URLs to IndexNow
+        uses: jakob-bagterp/index-now-submit-sitemap-urls-action@v2
+        with:
+          host: life20s.com
+          # Public by design: IndexNow verifies it against the key file hosted on the site.
+          api_key: 542397fccc10436b9baf1f6b480cc7fe
+          api_key_location: https://life20s.com/542397fccc10436b9baf1f6b480cc7fe.txt
+          endpoint: bing  # Bing shares IndexNow submissions with Yandex, Seznam, Naver and others.
+          sitemap_locations: "
+            https://life20s.com/sitemap.xml"
